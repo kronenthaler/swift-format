@@ -79,6 +79,14 @@ class MultiLineCommentParserTest(unittest.TestCase):
         comment = parser.multi_line_comment(tokenizer)
         assert comment is None
 
+    # def testNestedComments(self):
+    #     tokenizer = SwiftTokenizer("/* /* incomplete ** something */ * comment */")
+    #     parser = SwiftParser()
+    #
+    #     comment = parser.multi_line_comment(tokenizer)
+    #     print comment
+    #     assert comment is None
+
 class CommentParserTests(unittest.TestCase):
     def testSingleLineComment(self):
         tokenizer = SwiftTokenizer("//a comment\n")
@@ -97,3 +105,11 @@ class CommentParserTests(unittest.TestCase):
         assert comment is not None
         assert isinstance(comment, MultiLineComment)
         assert comment.token.cleaned_data == "a comment"
+
+    def testNotAComment(self):
+        tokenizer = SwiftTokenizer("let a = 10")
+        parser = SwiftParser()
+
+        comment = parser.comment(tokenizer)
+        assert comment is None
+        assert tokenizer.index == 0
