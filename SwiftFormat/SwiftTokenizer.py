@@ -15,6 +15,12 @@ class SwiftToken:
     def __repr__(self):
         return self.cleaned_data
 
+    def __eq__(self, other):
+        return self.cleaned_data == other.cleaned_data and \
+               self.start_position == other.start_position and \
+               self.end_position == other.end_position
+
+
 class SwiftTokenizer:
     def __init__(self, src):
         self.index = 0

@@ -4,7 +4,7 @@ __author__ = 'kronenthaler'
 
 import unittest
 import string
-from SwiftFormat.SwiftTokenizer import SwiftTokenizer
+from SwiftFormat.SwiftTokenizer import *
 from SwiftFormat.SwiftParser import SwiftParser
 from SwiftFormat.SwiftNodeTypes import *
 
@@ -91,6 +91,21 @@ class MultiLineCommentParserTest(unittest.TestCase):
 
         comment = parser.multi_line_comment(tokenizer)
         assert comment is not None
+        assert comment.children[0] == SwiftToken(u" ", 2, 3)
+        assert comment.children[1] == MultiLineComment(SwiftToken(u" incomplete ** something ", 5, 30))
+        assert comment.children[2] == SwiftToken(u" * comment ", 32, 43)
+
+    def testMultiComments(self):
+        tokenizer = SwiftTokenizer("/* /* incomplete ** something */ * comment /*something else*/*/")
+        parser = SwiftParser()
+
+        comment = parser.multi_line_comment(tokenizer)
+        assert comment is not None
+        assert comment.children[0] == SwiftToken(u" ", 2, 3)
+        assert comment.children[1] == MultiLineComment(SwiftToken(u" incomplete ** something ", 5, 30))
+        assert comment.children[2] == SwiftToken(u" * comment ", 32, 43)
+        assert comment.children[3] == MultiLineComment(SwiftToken(u"something else", 45, 59))
+
 
 class CommentParserTests(unittest.TestCase):
     def testSingleLineComment(self):

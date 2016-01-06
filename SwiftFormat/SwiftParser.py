@@ -32,17 +32,26 @@ class SwiftParser:
         if not head:
             return tokenizer.push_back()
 
-        # it could happen multiple times
-        comment = tokenizer.forward_until([u"*/", "/*"])
-        if not comment:
-            return tokenizer.push_back()
+        comment_node = None
 
-        comment_node = MultiLineComment(comment)
+        while True:
+            # it could happen multiple times
+            comment = tokenizer.forward_until([u"*/", "/*"])
+            if not comment:
+                tokenizer.push_back()
+                break
 
-        if tokenizer.current_token().cleaned_data == u"/*":
-            tokenizer.push_back()
-            sub_comment_node = self.multi_line_comment(tokenizer)
-            comment_node.append(sub_comment_node)
+            if comment_node is None:
+                comment_node = MultiLineComment(comment)
+            else:
+                comment_node.append(comment)
+
+            if tokenizer.current_token().cleaned_data == u"/*":
+                tokenizer.push_back()
+                sub_comment_node = self.multi_line_comment(tokenizer)
+                comment_node.append(sub_comment_node)
+            elif tokenizer.current_token().cleaned_data == u"*/":
+                return comment_node
 
         return comment_node
 

@@ -10,7 +10,7 @@ class Comment(SwiftNode):
 
 class SingleLineComment(Comment):
     def __str__(self):
-        return "// {0}\n".format(self.token.cleaned_data);
+        return "// {0}\n".format(self.token.cleaned_data)
     pass
 
 class MultiLineComment(Comment):
@@ -26,4 +26,7 @@ class MultiLineComment(Comment):
 
     def __repr__(self):
         return self.__str__()
+
+    def __eq__(self, other):
+        return self.children == other.children
     pass
