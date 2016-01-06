@@ -21,7 +21,7 @@ class SwiftParser:
         if not head:
             return tokenizer.push_back()
 
-        comment = tokenizer.next_token(delimiters="\x0A\x0D")
+        comment = tokenizer.next_token(delimiters="\x0A\x0D", allowEOF=True)
         if not comment:
             return tokenizer.push_back()
 
@@ -32,9 +32,17 @@ class SwiftParser:
         if not head:
             return tokenizer.push_back()
 
-        comment = tokenizer.forward_until(u"*/")
+        # it could happen multiple times
+        comment = tokenizer.forward_until([u"*/", "/*"])
         if not comment:
             return tokenizer.push_back()
 
-        return MultiLineComment(comment)
+        comment_node = MultiLineComment(comment)
+
+        if tokenizer.current_token().cleaned_data == u"/*":
+            tokenizer.push_back()
+            sub_comment_node = self.multi_line_comment(tokenizer)
+            comment_node.append(sub_comment_node)
+
+        return comment_node
 

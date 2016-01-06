@@ -12,14 +12,17 @@ class SwiftToken:
     def __str__(self):
         return "([{0} -> {1}] = {2})".format(self.start_position, self.end_position - 1, self.cleaned_data)
 
+    def __repr__(self):
+        return self.cleaned_data
+
 class SwiftTokenizer:
     def __init__(self, src):
         self.index = 0
         self.input = src
         self.on_going = []
 
-    def next_token(self, skip=string.whitespace, delimiters=string.whitespace+"!\"#$%&'()*+,-./:;<=>?@[\]^`{|}~"):
-        token_payload = u"";
+    def next_token(self, skip=string.whitespace, delimiters=string.whitespace+"!\"#$%&'()*+,-./:;<=>?@[\]^`{|}~", allowEOF=False):
+        token_payload = u""
         skipping = True
         for i in range(self.index, len(self.input)):
             if skipping:
@@ -39,6 +42,12 @@ class SwiftTokenizer:
                     self.index = i
                     return token
                 token_payload += self.input[i]
+
+        if allowEOF:
+            token = SwiftToken(token_payload, self.index, i)
+            self.on_going.insert(0, token)
+            self.index = i
+            return token
 
         return None
 
@@ -75,30 +84,34 @@ class SwiftTokenizer:
         self.push_back(tokens_retrieved)
 
     def forward_until(self, target_token):
-        if target_token is None or target_token.__len__() == 0:
+        if target_token is None or len(target_token) == 0:
             return None
+
+        if not isinstance(target_token, list):
+            target_token = [target_token]
 
         start_position = self.index
         payload = u""
 
         # forward to the first candidate of the token
         for i in range(self.index, len(self.input)):
-            if self.input[i] == target_token[0]:
-                found = True
-                for j in range(1, target_token.__len__()):
-                    if self.input[j + i] != target_token[j]:
-                        found = False
-                        break
+            for potential_token in target_token:
+                if self.input[i] == potential_token[0]:
+                    found = True
+                    for j in range(1, potential_token.__len__()):
+                        if j + i >= len(self.input) or self.input[j + i] != potential_token[j]:
+                            found = False
+                            break
 
-                if found:
-                    token = SwiftToken(payload, start_position, i)
-                    self.on_going.insert(0, token)
-                    self.index = i + target_token.__len__()
-                    return token
-                else:
-                    payload += self.input[i]
-            else:
-                payload += self.input[i]
+                    if found:
+                        token = SwiftToken(payload, start_position, i)
+                        self.on_going.insert(0, token)
+                        self.on_going.insert(0, SwiftToken(potential_token, i, i + potential_token.__len__()))
+                        self.index = i + potential_token.__len__()
+
+                        return token
+
+            payload += self.input[i]
 
         return None
 

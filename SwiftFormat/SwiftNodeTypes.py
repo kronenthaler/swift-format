@@ -14,6 +14,16 @@ class SingleLineComment(Comment):
     pass
 
 class MultiLineComment(Comment):
+    def __init__(self, token):
+        Comment.__init__(self, token)
+        self.children = [token]
+
+    def append(self, data):
+        self.children.append(data)
+
     def __str__(self):
-        return "/* {0} */".format(self.token.cleaned_data);
+        return "/* {0} */".format(self.children)
+
+    def __repr__(self):
+        return self.__str__()
     pass

@@ -39,6 +39,12 @@ class SingleLineCommentParserTest(unittest.TestCase):
 
         assert parser.single_line_comment(tokenizer) is not None
 
+    def testEOF(self):
+        tokenizer = SwiftTokenizer("//incomplete comment")
+        parser = SwiftParser()
+
+        assert parser.single_line_comment(tokenizer) is not None
+
     def testCorrectContent(self):
         tokenizer = SwiftTokenizer("//a comment\n")
         parser = SwiftParser()
@@ -79,13 +85,12 @@ class MultiLineCommentParserTest(unittest.TestCase):
         comment = parser.multi_line_comment(tokenizer)
         assert comment is None
 
-    # def testNestedComments(self):
-    #     tokenizer = SwiftTokenizer("/* /* incomplete ** something */ * comment */")
-    #     parser = SwiftParser()
-    #
-    #     comment = parser.multi_line_comment(tokenizer)
-    #     print comment
-    #     assert comment is None
+    def testNestedComments(self):
+        tokenizer = SwiftTokenizer("/* /* incomplete ** something */ * comment */")
+        parser = SwiftParser()
+
+        comment = parser.multi_line_comment(tokenizer)
+        assert comment is not None
 
 class CommentParserTests(unittest.TestCase):
     def testSingleLineComment(self):
