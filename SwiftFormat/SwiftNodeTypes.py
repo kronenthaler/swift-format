@@ -1,8 +1,11 @@
-__author__ = 'ignacio'
+
 
 class SwiftNode:
     def __init__(self, token):
         self.token = token
+
+    def __repr__(self):
+        return self.__str__()
     pass
 
 class Comment(SwiftNode):
@@ -23,9 +26,6 @@ class MultiLineComment(Comment):
 
     def __str__(self):
         return "/* {0} */".format(self.children)
-
-    def __repr__(self):
-        return self.__str__()
 
     def __eq__(self, other):
         return self.children == other.children

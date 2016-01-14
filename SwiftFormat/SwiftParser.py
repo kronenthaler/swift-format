@@ -1,57 +1,29 @@
-__author__ = 'kronenthaler'
-
 from SwiftTokenizer import SwiftTokenizer
 from SwiftNodeTypes import *
+from Syntax import *
 
 class SwiftParser:
     # the class needs a tokenizer
     # the class needs to store the parsing tree, that will be input to the formatter
 
     def __init__(self, src=None):
-        pass
+        self.comment = Comment()
 
-    def comment(self, tokenizer):
-        comment = self.single_line_comment(tokenizer)
-        if comment:
-            return comment
-        return self.multi_line_comment(tokenizer)
+    def skip_comments(self, tokenizer):
+        tokens = []
 
-    def single_line_comment(self, tokenizer):
-        head = tokenizer.search_for(u"//")
-        if not head:
-            return tokenizer.push_back()
-
-        comment = tokenizer.next_token(delimiters="\x0A\x0D", allowEOF=True)
-        if not comment:
-            return tokenizer.push_back()
-
-        return SingleLineComment(comment)
-
-    def multi_line_comment(self, tokenizer):
-        head = tokenizer.search_for(u"/*")
-        if not head:
-            return tokenizer.push_back()
-
-        comment_node = None
-
+        # skip all whitespaces, and comments until the next relevant token is found
         while True:
-            # it could happen multiple times
-            comment = tokenizer.forward_until([u"*/", "/*"])
-            if not comment:
-                tokenizer.push_back()
+            token = tokenizer.next_token()
+            if token.cleaned_data != u"/":
                 break
 
-            if comment_node is None:
-                comment_node = MultiLineComment(comment)
-            else:
-                comment_node.append(comment)
+            tokenizer.push_back() # problem here, it's not pushing back the position of the token but all the crap before it.
+            comment = self.comment.comment(tokenizer)
+            if comment is None:
+                break
 
-            if tokenizer.current_token().cleaned_data == u"/*":
-                tokenizer.push_back()
-                sub_comment_node = self.multi_line_comment(tokenizer)
-                comment_node.append(sub_comment_node)
-            elif tokenizer.current_token().cleaned_data == u"*/":
-                return comment_node
+            # take the comment element and add it to the queue of tokens
+            tokens.append(comment)
 
-        return comment_node
-
+        return tokens

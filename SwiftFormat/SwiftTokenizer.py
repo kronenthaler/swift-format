@@ -1,6 +1,5 @@
-__author__ = 'kronenthaler'
-
 import string
+
 
 class SwiftToken:
     def __init__(self, cleaned_data, start_position, end_position):
@@ -10,7 +9,7 @@ class SwiftToken:
         self.type = None
 
     def __str__(self):
-        return "([{0} -> {1}] = {2})".format(self.start_position, self.end_position - 1, self.cleaned_data)
+        return "([{0} -> {1}] = {2})".format(self.start_position, self.end_position, self.cleaned_data)
 
     def __repr__(self):
         return self.cleaned_data
