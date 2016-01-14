@@ -1,8 +1,7 @@
-__author__ = 'kronenthaler'
-
 import unittest
 import string
 from SwiftFormat.SwiftTokenizer import SwiftTokenizer
+
 
 class TokenizerTests(unittest.TestCase):
 
