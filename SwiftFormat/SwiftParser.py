@@ -18,7 +18,7 @@ class SwiftParser:
             if token.cleaned_data != u"/":
                 break
 
-            tokenizer.push_back() # problem here, it's not pushing back the position of the token but all the crap before it.
+            tokenizer.push_back()
             comment = self.comment.comment(tokenizer)
             if comment is None:
                 break
