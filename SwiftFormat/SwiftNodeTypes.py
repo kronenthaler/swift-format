@@ -14,7 +14,7 @@ class Comment(SwiftNode):
 
 class SingleLineComment(Comment):
     def __repr__(self):
-        return "// {0}\n".format(self.token.cleaned_data)
+        return "// {0}\n".format(self.token.token)
     pass
 
 class MultiLineComment(Comment):

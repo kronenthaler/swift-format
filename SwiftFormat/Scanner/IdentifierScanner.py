@@ -1,8 +1,7 @@
-from SwiftFormat.SwiftTokenizer import SwiftTokenizer
 from SwiftFormat.SwiftNodeTypes import *
 
 
-class Identifier:
+class IdentifierScanner:
     # identifier ::= identifier-head [identifier-characters]
     # identifier ::= `identifier-head [identifier-characters]`
     # identifier ::= implicit-parameter-name

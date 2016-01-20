@@ -1,3 +1,3 @@
 from SwiftFormat import SwiftFormatter
-from SwiftFormat import SwiftTokenizer
+from SwiftFormat.Scanner import SwiftScanner
 from SwiftFormat import SwiftParser
