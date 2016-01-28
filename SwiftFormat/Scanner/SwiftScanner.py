@@ -1,30 +1,10 @@
-import string
-# from SwiftFormat.SwiftNodeTypes import *
-from SwiftFormat.Scanner.CommentScanner import *
-from SwiftFormat.Scanner.IdentifierScanner import *
-
-
-class SwiftLexem:
-    def __init__(self, cleaned_data, start_position, end_position):
-        self.token = cleaned_data
-        self.start_position = start_position
-        self.end_position = end_position
-        self.type = None
-        self.prefix_comments = []
-
-    def __str__(self):
-        return "([{0} -> {1}] = {2})".format(self.start_position, self.end_position, self.token)
-
-    def __repr__(self):
-        return self.token
-
-    def __eq__(self, other):
-        return self.token == other.token and \
-               self.start_position == other.start_position and \
-               self.end_position == other.end_position
+from CommentScanner import *
+from IdentifierScanner import *
 
 
 class SwiftScanner:
+    EOF = -1000
+
     def __init__(self, src):
         self.index = 0
         self.input = src
@@ -42,10 +22,33 @@ class SwiftScanner:
         # identifier ::= <use apple's grammar for identifier>
         # symbol ::= <any other case>
         prefix_comments = self.skip_comments()
+        self.skip()
+        id = self.identifier.identifier(self)
+        if id is not None:
+            id.prefix_comments = prefix_comments
 
-        pass
+        return id
 
-    def _next_token(self, skip=string.whitespace, delimiters=string.whitespace + "!\"#$%&'()*+,-./:;<=>?@[\]^`{|}~", allowEOF=False):
+    def skip(self, charset=string.whitespace):
+        for i in range(self.index, len(self.input)):
+            if self.input[i] not in charset:
+                self.index = i
+                break
+
+    def peak_next(self):
+        return u"{0}".format(self.input[self.index])
+
+    def next_character(self):
+        if self.index >= len(self.input):
+            return None
+
+        token = SwiftLexem(u"{0}".format(self.input[self.index]), self.index, self.index)
+        self.on_going.insert(0, token)
+        self.index += 1
+        return token
+
+    def next_chunk(self, skip=string.whitespace, delimiters=string.whitespace + "!\"#$%&'()*+,-./:;<=>?@[\]^`{|}~",
+                   allowed_chars=None, allowEOF=False):
         token_payload = u""
         skipping = True
         for i in range(self.index, len(self.input)):
@@ -53,14 +56,16 @@ class SwiftScanner:
                 if self.input[i] not in skip:
                     skipping = False
                     token_payload += self.input[i]
-                    if self.input[i] in delimiters:
+                    if (delimiters is not None and self.input[i] in delimiters) or (
+                            allowed_chars is not None and self.input[i] not in allowed_chars):
                         token = SwiftLexem(token_payload, self.index, i)
                         self.on_going.insert(0, token)
                         # move to the next char
                         self.index = i + 1
                         return token
             else:
-                if self.input[i] in delimiters:
+                if (delimiters is not None and self.input[i] in delimiters) or (
+                        allowed_chars is not None and self.input[i] not in allowed_chars):
                     token = SwiftLexem(token_payload, self.index, i)
                     self.on_going.insert(0, token)
                     self.index = i
@@ -89,7 +94,7 @@ class SwiftScanner:
             if i != 0:
                 skip = ""
 
-            tok = self._next_token(delimiters="{0}".format(target_token[i]), skip=skip)
+            tok = self.next_chunk(delimiters="{0}".format(target_token[i]), skip=skip)
 
             tokens_retrieved += 1
             if tok is None or tok.token != u"{0}".format(target_token[i]):
@@ -139,6 +144,11 @@ class SwiftScanner:
 
         return None
 
+    def replace_tokens(self, new_token, last_tokens=1):
+        self.discard_tokens(last_tokens)
+        self.on_going.insert(0, new_token)
+        return new_token
+
     def discard_tokens(self, last_tokens=1):
         while last_tokens > 0 and self.on_going.__len__() > 0:
             token = self.on_going.pop(0)
@@ -162,8 +172,8 @@ class SwiftScanner:
 
         # skip all whitespaces, and comments until the next relevant token is found
         while True:
-            lexem = self._next_token()
-            if lexem.token != u"/":
+            lexem = self.next_chunk()
+            if lexem is None or lexem.token != u"/":
                 break
 
             self.push_back()

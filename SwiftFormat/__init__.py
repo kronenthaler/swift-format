@@ -1,3 +1,4 @@
 from SwiftFormat import SwiftFormatter
-from SwiftFormat.Scanner import SwiftScanner
 from SwiftFormat import SwiftParser
+from SwiftFormat.Scanner import SwiftScanner
+

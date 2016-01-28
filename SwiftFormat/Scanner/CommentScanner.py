@@ -18,7 +18,7 @@ class CommentScanner:
         if not head:
             return None
 
-        comment = tokenizer._next_token(delimiters=CommentScanner.END_OF_LINE, allowEOF=True)
+        comment = tokenizer.next_chunk(delimiters=CommentScanner.END_OF_LINE, allowEOF=True)
         if not comment:
             return tokenizer.push_back()
 
