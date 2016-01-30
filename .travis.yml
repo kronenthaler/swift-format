@@ -11,7 +11,7 @@ install:
 
 # command to run tests
 script: 
-    - nosetests --with-coverage tests/*
-#    - coverage run --source=. nosetests tests/*
+    - python setup.py test
+    - coverage run --source=SwiftFormat setup.py test
 
 after_success: coveralls
