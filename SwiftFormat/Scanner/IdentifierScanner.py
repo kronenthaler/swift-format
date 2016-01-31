@@ -39,6 +39,9 @@ class IdentifierScanner:
         if char == u"`":
             tick_open = scanner.next_chunk()
             head = self._identifier_head(scanner)
+            if head is None:
+                return None
+
             body = self._identifier_characters(scanner)
             tick_close = scanner.next_chunk()
 
@@ -50,6 +53,9 @@ class IdentifierScanner:
             return scanner.replace_tokens(lexem, last_tokens=4)
 
         head = self._identifier_head(scanner)
+        if head is None:
+            return None
+
         body = self._identifier_characters(scanner)
 
         lexem = SwiftLexem.Create([head, body], type=SwiftLexem.IDENTIFIER)

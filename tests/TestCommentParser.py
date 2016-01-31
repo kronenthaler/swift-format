@@ -36,6 +36,12 @@ class SingleLineCommentParserTest(unittest.TestCase):
         assert comment is not None
         assert comment.token.token == u'a comment'
 
+    def testEmptyEOF(self):
+        scanner = SwiftScanner("//")
+        comment = scanner.comment.single_line_comment(scanner)
+        assert comment is not None
+        assert comment.token.token == u''
+
 
 class MultiLineCommentParserTest(unittest.TestCase):
     def testCorrectContent(self):

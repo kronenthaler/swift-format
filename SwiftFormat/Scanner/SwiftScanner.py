@@ -51,6 +51,7 @@ class SwiftScanner:
                    allowed_chars=None, allowEOF=False):
         token_payload = u""
         skipping = True
+        i = self.index
         for i in range(self.index, len(self.input)):
             if skipping:
                 if self.input[i] not in skip:
