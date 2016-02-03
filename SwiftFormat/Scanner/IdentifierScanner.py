@@ -1,13 +1,12 @@
 import string
 from SwiftFormat.SwiftNodeTypes import *
-from SwiftLexem import *
+from SwiftLexeme import *
 
 
 class IdentifierScanner:
     # identifier ::= identifier-head [identifier-characters]
     # identifier ::= `identifier-head [identifier-characters]`
     # identifier ::= implicit-parameter-name
-    # identifier-list ::= identifier [,identifier-list]
     # identifier-head ::= a-zA-Z
     # identifier-head ::= _
     # identifier-head ::= U+00A8 | U+00AA | U+00AD | U+00AF | U+00B2-U+00B5 | or U+00B7-U+00BA
@@ -60,9 +59,6 @@ class IdentifierScanner:
 
         lexem = SwiftLexem.Create([head, body], type=SwiftLexem.IDENTIFIER)
         return scanner.replace_tokens(lexem, last_tokens=2)
-
-    def identifier_list(self, scanner):
-        pass
 
     def _identifier_head(self, scanner):
         token = scanner.next_character()

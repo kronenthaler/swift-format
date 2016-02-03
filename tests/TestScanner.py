@@ -2,7 +2,7 @@ import string
 import unittest
 
 from SwiftFormat.Scanner.SwiftScanner import SwiftScanner
-from SwiftFormat.Scanner.SwiftLexem import SwiftLexem
+from SwiftFormat.Scanner.SwiftLexeme import SwiftLexem
 
 class TokenizerTests(unittest.TestCase):
 

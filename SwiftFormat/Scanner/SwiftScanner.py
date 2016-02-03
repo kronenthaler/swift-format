@@ -59,25 +59,16 @@ class SwiftScanner:
                     token_payload += self.input[i]
                     if (delimiters is not None and self.input[i] in delimiters) or (
                             allowed_chars is not None and self.input[i] not in allowed_chars):
-                        token = SwiftLexem(token_payload, self.index, i)
-                        self.on_going.insert(0, token)
-                        # move to the next char
-                        self.index = i + 1
-                        return token
+                        return self.insert_token(token_payload, self.index, i, 1)
             else:
                 if (delimiters is not None and self.input[i] in delimiters) or (
                         allowed_chars is not None and self.input[i] not in allowed_chars):
-                    token = SwiftLexem(token_payload, self.index, i)
-                    self.on_going.insert(0, token)
-                    self.index = i
-                    return token
+                    return self.insert_token(token_payload, self.index, i)
+
                 token_payload += self.input[i]
 
         if allowEOF:
-            token = SwiftLexem(token_payload, self.index, i)
-            self.on_going.insert(0, token)
-            self.index = i
-            return token
+            return self.insert_token(token_payload, self.index, i)
 
         return None
 
@@ -106,10 +97,7 @@ class SwiftScanner:
 
         if found:
             token = SwiftLexem(payload, start_position, self.index)
-            # discard the partial tokens and group them as 1
-            self.discard_tokens(tokens_retrieved)
-            self.on_going.insert(0, token)
-            return token
+            return self.replace_tokens(token, tokens_retrieved)
 
         self.push_back(tokens_retrieved)
 
@@ -134,16 +122,19 @@ class SwiftScanner:
                             break
 
                     if found:
-                        token = SwiftLexem(payload, start_position, i)
-                        self.on_going.insert(0, token)
-                        self.on_going.insert(0, SwiftLexem(potential_token, i, i + potential_token.__len__()))
-                        self.index = i + potential_token.__len__()
-
+                        token = self.insert_token(payload, start_position, i, -i)
+                        self.insert_token(potential_token, i, i + potential_token.__len__())
                         return token
 
             payload += self.input[i]
 
         return None
+
+    def insert_token(self, token_payload, start, end, move_forward=0):
+        token = SwiftLexem(token_payload, start, end)
+        self.on_going.insert(0, token)
+        self.index = end + move_forward
+        return token
 
     def replace_tokens(self, new_token, last_tokens=1):
         self.discard_tokens(last_tokens)
@@ -173,8 +164,8 @@ class SwiftScanner:
 
         # skip all whitespaces, and comments until the next relevant token is found
         while True:
-            lexem = self.next_chunk()
-            if lexem is None or lexem.token != u"/":
+            lexeme = self.next_chunk()
+            if lexeme is None or lexeme.token != u"/":
                 break
 
             self.push_back()
