@@ -8,10 +8,13 @@ python:
 install: 
     - pip install .
     - pip install coveralls
+    - pip install scrutinizer-ocular
 
 # command to run tests
 script: 
     - python setup.py test
     - coverage run --source=SwiftFormat setup.py test
 
-after_success: coveralls
+after_success: 
+    - coveralls
+    - ocular --data-file ".coverage"
