@@ -5,7 +5,15 @@ python:
     - "2.7"
 
 # command to install dependencies
-install: "pip install ."
+install: 
+    - pip install .
+    - pip install coveralls
+    - pip install scrutinizer-ocular
 
 # command to run tests
-script: nosetests tests/*
+script: 
+    - coverage run --source=SwiftFormat setup.py test
+
+after_success: 
+    - coveralls
+    - ocular --data-file ".coverage"
