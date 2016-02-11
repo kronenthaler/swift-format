@@ -1,0 +1,71 @@
+or ([parser]) -> parser
+and ([parser]) -> parser
+maybe (parser) -> parser
+skip (parser) -> parser
+
+f = or( and (x, y), and(a, maybe(b) )
+f(state("x"))
+=> or( and (x, y), and(a, maybe(b) )(state)
+	=> and(x,y)(state)
+		=> x(state)
+		=> y(state)
+	=> and(a, maybe(b))(state)
+		=> a(state)
+		=> maybe(b)(state)
+			=> b(state)
+
+and: parser, parser -> [ function(state) -> (token, state) :: parser]
+and (a, b){
+	return function(state){
+		a0 = a(state)
+		if(a0 == null) { return null; }
+		b0 = b(state)
+		if(b0 == null) { return null; }
+		return a0 + b0;
+	}
+}
+
+maybe(a){
+	return function (state){
+		return a(state) | empty(state)
+	};
+}
+
+skip(a){
+	return function (state){
+		prev = state
+		while(true)
+			a0 = a(prev.state);
+			if (a0 == null) {
+				return prev;
+			}
+			prev = a0
+	};
+}
+
+// string -> function(state) -> (token, state)
+match(a){
+	return function (state){
+		if(state[current] == a)
+			return ('a', state.advance(1))
+	};
+}
+
+// Not on the same parse but in the result 
+empty(state){
+	return (_, state)
+}
+
+
+f = skip(or(whitespace(), comment()));
+f(state("  /**/"))
+=> skip(or(whitespace(), comment()))(state("  /**/"))
+	=> or(whitespace(), comment())(state("  /**/"))
+		=> whitespace()(state("  /**/"))
+			=> (_, [0, 2]])
+		=> comment()(state("  /**/"))
+			=> (/**/, [2, 6])
+	=> (/**/, [2, 6]) 
+=> (/**/, [2, 6])
+
+
