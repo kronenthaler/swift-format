@@ -82,11 +82,17 @@ class State:
     def __add__(self, other):
         return State(self.input, max(self.index, other.index))
 
+    def __rshift__(self, increment):
+        return State(self.input, self.index + increment)
+
+    def __lshift__(self, decrement):
+        return State(self.input, self.index - decrement)
+
 
 def a(literal):
     def _match(state):
         if state.index < len(state.input) and state.input[state.index] == literal:
-            return Lexeme(literal, state.index, state.index + 1), State(state.input, state.index + 1)
+            return Lexeme(literal, state.index, state.index + 1), state >> 1
         return None
 
     return Parser(_match)
@@ -97,11 +103,26 @@ def between(lower, upper):
     # the given bounds.
     # Returns the current characters as a lexeme.
     def _between(state):
-        if state.index < len(state.input) and state.input[state.index] >= lower and state.input[state.index] <= upper:
-            return Lexeme(state.input[state.index], state.index, state.index + 1), State(state.input, state.index + 1)
+        if state.index < len(state.input) and lower <= state.input[state.index] <= upper:
+            return Lexeme(state.input[state.index], state.index, state.index + 1), state >> 1
         return None
 
     return Parser(_between)
+
+
+def repeat(parser, until):
+    def _repeat(state):
+        result = empty(state)
+        while until.run(state) is None:
+            s = parser.run(state)
+            if s is None:
+                return None
+            (lexeme, state) = s
+            result = result[0] + lexeme, result[1] + state
+
+        return result
+
+    return Parser(_repeat)
 
 
 def empty(state):
@@ -199,6 +220,10 @@ if __name__ == "__main__":
 
     parser = skip(any([a(" "), a("\t"), a("\n")])) & a("a")
     assert parser.parse("   a")[0].token == 'a'
+
+    parser = repeat(a("a"), a("a") & a("b"))
+    print parser.parse("aaaaab")
+    assert parser.parse("aaaaab")
 
     # (comments >> push) & skip(whitespaces)
 
