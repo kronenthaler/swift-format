@@ -162,20 +162,21 @@ def at_least_one(parser):
     return parser & many(parser)
 
 
-def any(options):
+def any(*options):
+    print options
     if len(options) == 0:
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] | any(options[1:])
+    return options[0] | any(options[1:][0])
 
 
-def every(options):
+def every(*options):
     if len(options) == 0:
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] & all(options[1:])
+    return options[0] & all(options[1:][0])
 
 
 def forward_decl():
@@ -211,19 +212,21 @@ if __name__ == "__main__":
 
     parser = at_least_one(a("a"))
     assert parser.parse('a')
-    print parser.parse('aaaa')[0]
     assert parser.parse('aaaa')[0].token == "aaaa"
     assert parser.parse('b') is None
 
     parser = a("a") >> (lambda x: Lexeme(string.upper(x.token), x.start, x.end))
     assert parser.parse('a')[0].token == 'A'
 
-    parser = skip(any([a(" "), a("\t"), a("\n")])) & a("a")
+    parser = skip(any(a(" "), a("\t"), a("\n"))) & a("a")
     assert parser.parse("   a")[0].token == 'a'
 
     parser = repeat(a("a"), a("a") & a("b"))
+    # parser = many(a("a")) & (a("a") & a("b"))
     print parser.parse("aaaaab")
     assert parser.parse("aaaaab")
+    print parser.parse("aaaaa")
+    assert parser.parse("aaaaa")
 
     # (comments >> push) & skip(whitespaces)
 
