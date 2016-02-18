@@ -1,12 +1,15 @@
 class Parser:
     """
     Wrapper object of a function of type:
-    (Lexeme, State) -> (Lexeme, State)
+    State -> (Lexeme, State)
     """
+    
     def __init__(self, f):
+        # Parser with the function to execute when invoked
         setattr(self, 'run', f)
 
     def define(self, p):
+        # Define the parser function 
         setattr(self, 'run', p.run)
 
     def __or__(self, other):
@@ -40,9 +43,12 @@ class Parser:
         return Parser(_and)
 
     def __rshift__(self, f):
+        # parser, function -> parser
+        # (State) -> (f(lexeme), State)
         def _rshift(state):
             (lexeme, s) = self.run(state)
             return f(lexeme), s
+
         return Parser(_rshift)
 
     def parse(self, sequence):
@@ -56,19 +62,20 @@ class Lexeme:
         self.start = start
         self.end = end
         self.prefix_comments = []
+        self.type = 0
 
     def __repr__(self):
-        return "L({0} @ [{1}, {2}))".format(self.token, self.start, self.end)
+        return "L({0} @ [{1}, {2}) => {3}) ".format(self.token, self.start, self.end, self.children)
 
     def __add__(self, other):
-        str = u""
+        token = u""
         if other.token is None:
-            str = self.token
+            token = self.token
         elif self.token is None:
-            str = other.token
+            token = other.token
         else:
-            str = self.token + other.token
-        return Lexeme(str, self.start, other.end)
+            token = self.token + other.token
+        return Lexeme(token, self.start, other.end)
 
 
 class State:
@@ -94,8 +101,12 @@ def a(literal):
         if state.index < len(state.input) and state.input[state.index] == literal:
             return Lexeme(literal, state.index, state.index + 1), state >> 1
         return None
-
     return Parser(_match)
+
+
+def match(sequence):
+    options = tuple([a(l) for l in sequence])
+    return every(*options)
 
 
 def between(lower, upper):
@@ -106,7 +117,6 @@ def between(lower, upper):
         if state.index < len(state.input) and lower <= state.input[state.index] <= upper:
             return Lexeme(state.input[state.index], state.index, state.index + 1), state >> 1
         return None
-
     return Parser(_between)
 
 
@@ -119,9 +129,7 @@ def repeat(parser, until):
                 return None
             (lexeme, state) = s
             result = result[0] + lexeme, result[1] + state
-
         return result
-
     return Parser(_repeat)
 
 
@@ -162,13 +170,12 @@ def at_least_one(parser):
     return parser & many(parser)
 
 
-def any(*options):
-    print options
+def one_of(*options):
     if len(options) == 0:
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] | any(options[1:][0])
+    return options[0] | one_of(*options[1:])
 
 
 def every(*options):
@@ -176,7 +183,7 @@ def every(*options):
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] & all(options[1:][0])
+    return options[0] & every(*options[1:])
 
 
 def forward_decl():
@@ -215,18 +222,18 @@ if __name__ == "__main__":
     assert parser.parse('aaaa')[0].token == "aaaa"
     assert parser.parse('b') is None
 
-    parser = a("a") >> (lambda x: Lexeme(string.upper(x.token), x.start, x.end))
-    assert parser.parse('a')[0].token == 'A'
+    parser = a("a") >> (lambda x: string.upper(x.token))
+    assert parser.parse('a')[0] == 'A'
 
-    parser = skip(any(a(" "), a("\t"), a("\n"))) & a("a")
+    parser = skip(one_of(a(" "), a("\t"), a("\n"))) & a("a")
     assert parser.parse("   a")[0].token == 'a'
 
     parser = repeat(a("a"), a("a") & a("b"))
     # parser = many(a("a")) & (a("a") & a("b"))
-    print parser.parse("aaaaab")
     assert parser.parse("aaaaab")
-    print parser.parse("aaaaa")
-    assert parser.parse("aaaaa")
+    assert parser.parse("aaaaa") is None
 
-    # (comments >> push) & skip(whitespaces)
-
+    parser = match("let") | match("latitude")
+    assert parser.parse("let")
+    assert parser.parse("latitude")
+    assert parser.parse("lat") is None

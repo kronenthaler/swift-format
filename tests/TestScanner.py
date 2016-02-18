@@ -1,3 +1,5 @@
+# TODO: most cases are no longer valid keep only the related to the specific rules
+
 import string
 import unittest
 

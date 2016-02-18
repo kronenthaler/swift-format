@@ -1,3 +1,4 @@
+# TODO: rewrite all code
 import string
 from SwiftFormat.SwiftNodeTypes import *
 from SwiftLexeme import *

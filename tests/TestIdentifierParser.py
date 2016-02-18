@@ -1,3 +1,4 @@
+# TODO: adapt tests, the cases are still valid
 import unittest
 
 from SwiftFormat.Scanner.SwiftScanner import *

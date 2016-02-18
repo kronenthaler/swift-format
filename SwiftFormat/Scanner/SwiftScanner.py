@@ -1,3 +1,5 @@
+# TODO: remove all code, rewrite the rules using the parser combinators
+
 from CommentScanner import *
 from IdentifierScanner import *
 

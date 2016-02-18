@@ -1,3 +1,5 @@
+# TODO: adapt the test with the refactor of the scanner, test cases are still valid
+
 import unittest
 
 from SwiftFormat.Scanner.SwiftScanner import *

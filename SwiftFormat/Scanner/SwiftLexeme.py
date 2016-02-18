@@ -1,3 +1,4 @@
+# TODO: remove all code, keep the type constants
 class SwiftLexem:
     IDENTIFIER = 1
     IMPLICIT_PARAMETER = 1 << 1
