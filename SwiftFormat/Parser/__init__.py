@@ -46,7 +46,10 @@ class Parser:
         # parser, function -> parser
         # (State) -> (f(lexeme), State)
         def _rshift(state):
-            (lexeme, s) = self.run(state)
+            a = self.run(state)
+            if a is None:
+                return None
+            (lexeme, s) = a
             return f(lexeme), s
 
         return Parser(_rshift)
@@ -162,7 +165,6 @@ def many(parser):
                 return result
             (lexeme, state) = a
             result = result[0] + lexeme, result[1] + state
-        return None
     return Parser(_many)
 
 
@@ -190,50 +192,3 @@ def forward_decl():
     def f(state):
         raise Exception('Forward declarations has to be defined on the parser')
     return Parser(f)
-
-if __name__ == "__main__":
-    import string
-
-    parser = a("a")
-    assert parser.parse('a')
-    assert parser.parse('b') is None
-
-    parser = a("a") & a("b")
-    assert parser.parse('ab')
-    assert parser.parse('ba') is None
-
-    parser = a('a') | a('b')
-    assert parser.parse('a')
-    assert parser.parse('b')
-    assert parser.parse('c') is None
-
-    parser = between('a', 'c')
-    assert parser.parse('a')
-    assert parser.parse('b')
-    assert parser.parse('c')
-    assert parser.parse('d') is None
-
-    parser = maybe(a('a'))
-    assert parser.parse('a')
-    assert parser.parse('b')[0].token is None
-
-    parser = at_least_one(a("a"))
-    assert parser.parse('a')
-    assert parser.parse('aaaa')[0].token == "aaaa"
-    assert parser.parse('b') is None
-
-    parser = a("a") >> (lambda x: string.upper(x.token))
-    assert parser.parse('a')[0] == 'A'
-
-    parser = skip(one_of(a(" "), a("\t"), a("\n"))) & a("a")
-    assert parser.parse("   a")[0].token == 'a'
-
-    parser = repeat(a("a"), a("a") & a("b"))
-    # parser = many(a("a")) & (a("a") & a("b"))
-    assert parser.parse("aaaaab")
-    assert parser.parse("aaaaa") is None
-
-    parser = match("let") | match("latitude")
-    assert parser.parse("let")
-    assert parser.parse("latitude")
-    assert parser.parse("lat") is None
