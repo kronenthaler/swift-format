@@ -43,13 +43,17 @@ def between(lower, upper):
 
 
 def repeat(parser, until):
+    # equivalent to a do-while structure. Check that parser is valid (at least once), before until is valid.
+    # if until is found right away it return none since parser was not valid. 
     def _repeat(state):
-        result = empty(state)
+        result = None
         while until.run(state) is None:
             s = parser.run(state)
             if s is None:
                 return None
             (lexeme, state) = s
+            if result is None:
+                result = empty(state)
             result = result[0] + lexeme, result[1] + state
         return result
     return Parser(_repeat)

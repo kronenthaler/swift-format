@@ -7,7 +7,7 @@ class Lexeme:
         self.type = 0
 
     def __repr__(self):
-        return "L({0} @ [{1}, {2}) => {3}) ".format(self.token, self.start, self.end, self.children)
+        return "L({0} @ [{1}, {2})) ".format(self.token, self.start, self.end)
 
     def __add__(self, other):
         token = u""

@@ -15,5 +15,5 @@ def _single_line_comment():
 
 def _multi_line_comment():
     multi_line = forward_decl()
-    parser = match(u"/*") & many(repeat(anything(), match(u"/*") | match(u"*/"))) & match(u"*/")
+    parser = match(u"/*") & many(repeat(anything(), match(u"/*") | match(u"*/")) | multi_line) & match(u"*/")
     return multi_line.define(parser)
