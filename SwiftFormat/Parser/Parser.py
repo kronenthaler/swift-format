@@ -13,6 +13,7 @@ class Parser:
     def define(self, p):
         # Define the parser function
         setattr(self, 'run', p.run)
+        return self
 
     def __or__(self, other):
         # parser, parser -> parser

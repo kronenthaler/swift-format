@@ -16,6 +16,21 @@ def match(sequence):
     return every(*options)
 
 
+def anything():
+    def _anything(state):
+        if state.index < len(state.input):
+            return Lexeme(state.input[state.index], state.index, state.index + 1), state >> 1
+        return None
+    return Parser(_anything)
+
+
+def eof():
+    def _eof(state):
+        if state.index == len(state.input):
+            return empty(state), state >> 1
+        return None
+    return Parser(_eof)
+
 def between(lower, upper):
     # given a lower and upper limit, return a (Lexeme, State) if the current character of the input it's between
     # the given bounds.

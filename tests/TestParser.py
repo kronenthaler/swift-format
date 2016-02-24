@@ -95,3 +95,16 @@ class ParserCombinatorTest(unittest.TestCase):
             assert parser.parse('a')
         except:
             self.fail()
+
+    def testAnything(self):
+        parser = anything()
+        assert parser.parse("a")
+        assert parser.parse("0")
+        assert parser.parse("\n")
+        assert parser.parse(" ")
+        assert parser.parse("") is None
+
+    def testEOF(self):
+        parser = eof()
+        assert parser.parse("")
+        assert parser.parse("ads") is None
