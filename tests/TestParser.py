@@ -1,6 +1,7 @@
 import unittest
 import string
 from SwiftFormat.Parser import *
+from SwiftFormat.Scanner import *
 
 
 class ParserCombinatorTest(unittest.TestCase):
@@ -25,6 +26,10 @@ class ParserCombinatorTest(unittest.TestCase):
         parser = a('a') >> (lambda x: string.upper(x.token) if x is not None else x)
         assert parser.parse("a")[0] == "A"
         assert parser.parse('b') is None
+
+    def testSetType(self):
+        parser = (a('a') | a('b')) >> (set_type(SwiftTypes.LITERAL_INTEGER_BINARY))
+        assert parser.parse('a')[0].type == SwiftTypes.LITERAL_INTEGER_BINARY
 
     def testBetween(self):
         parser = between('a', 'c')

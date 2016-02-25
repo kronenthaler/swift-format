@@ -31,6 +31,7 @@ def eof():
         return None
     return Parser(_eof)
 
+
 def between(lower, upper):
     # given a lower and upper limit, return a (Lexeme, State) if the current character of the input it's between
     # the given bounds.

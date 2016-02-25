@@ -1,7 +1,6 @@
 import unittest
-import string
-from SwiftFormat.Parser import *
 from SwiftFormat.Syntax import *
+
 
 class IdentifierTest(unittest.TestCase):
 
