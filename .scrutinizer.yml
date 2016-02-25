@@ -4,6 +4,7 @@ checks:
         duplicate_code: true
 filter:
     excluded_paths:
-        - '*/tests/*'
+        - tests/*
+       	- */tests/*
 tools:
     external_code_coverage: true
