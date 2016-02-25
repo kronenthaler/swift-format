@@ -65,7 +65,7 @@ def _boolean_literal():
 def _numeric_literal():
     integer = maybe(a(u"-")) & _integer_literal()
     floating = maybe(a(u"-")) & _floating_point_literal()
-    return max(integer, floating)
+    return longest(integer, floating)
 
 
 def _integer_literal():
@@ -116,7 +116,7 @@ def _floating_point_literal():
     hexadecimal_floating_literal = _hexadecimal_literal() & maybe(hexadecimal_fraction) & hexadecimal_exponent
     hexadecimal_floating_literal >>= set_type(SwiftTypes.LITERAL_FLOATING_HEXADECIMAL)
 
-    return max(hexadecimal_floating_literal, decimal_floating_literal)
+    return longest(hexadecimal_floating_literal, decimal_floating_literal)
 
 
 def _string_literal():

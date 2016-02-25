@@ -23,6 +23,12 @@ class Lexeme:
                       self.prefix_comments + other.prefix_comments,
                       self.type | other.type)
 
+    def __len__(self):
+        if self.token is None:
+            return 0
+
+        return self.token.__len__()
+
 
 def set_type(type):
     def _mark(lexeme):

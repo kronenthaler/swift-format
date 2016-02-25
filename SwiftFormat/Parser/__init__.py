@@ -118,19 +118,13 @@ def forward_decl():
     return Parser(f)
 
 
-def max(p1, p2):
-    def _max(state):
-        a = p1.run(state)
-        b = p2.run(state)
+def longest(*options):
+    def _longest(state):
+        results = [p.run(state) for p in options]
+        valid = [t for t in results if t is not None]
+        if len(valid) == 0:
+            return None
 
-        if a is None:
-            return b
+        return max(valid, key=(lambda (l, s): l.__len__()))
 
-        if b is None:
-            return a
-
-        if len(a[0].token) > len(b[0].token):
-            return a
-        return b
-
-    return Parser(_max)
+    return Parser(_longest)

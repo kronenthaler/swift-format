@@ -59,7 +59,7 @@ class LiteralTest(unittest.TestCase):
     def testDecimalLiteral(self):
         parser = literal()
         assert parser.parse(u"0")
-        assert parser.parse(u"0")[0].type == SwiftTypes.LITERAL_FLOATING_DECIMAL
+        assert parser.parse(u"0")[0].type == SwiftTypes.LITERAL_INTEGER_DECIMAL
         assert parser.parse(u"-0")
         assert parser.parse(u"1")
         assert parser.parse(u"-1")
