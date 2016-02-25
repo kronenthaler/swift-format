@@ -31,3 +31,5 @@ class CommentTest(unittest.TestCase):
         assert parser.parse(u"/* something /* something /* something */ */ */")
         assert parser.parse(u"/* something /* something */ /* something */ */")
         assert parser.parse(u"/* /* something */ /* something */ something */")
+        assert parser.parse(u"/* /* unbalanced /* something */ something */") is None
+        assert parser.parse(u"/* /* unbalanced */ /* something */ something ") is None
