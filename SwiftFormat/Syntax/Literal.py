@@ -9,8 +9,6 @@ nil-literal ::= nil
 
 integer-literal ::= binary-literal
 integer-literal ::= octal-literal
-integer-literal ::= decimal-literal
-integer-literal ::= hexadecimal-literal
 
 binary-literal ::= 0b binary-digit {binary-literal-character}
 binary-digit ::= Digit 0 or 1
@@ -20,20 +18,20 @@ octal-literal ::= 0o octal-digit {octal-literal-character}
 octal-digit ::= Digit 0 through 7
 octal-literal-character ::= octal-digit | _
 
+floating-point-literal ::= decimal-literal [decimal-fraction] [decimal-exponent]
 decimal-literal ::= decimal-digit {decimal-literal-character}
 decimal-digit ::= Digit 0 through 9
 decimal-literal-character ::= decimal-digit | _
+decimal-fraction ::= . decimal-literal
+decimal-exponent ::= floating-point-e [sign] decimal-literal
 
+floating-point-literal ::= hexadecimal-literal [hexadecimal-fraction] hexadecimal-exponent
 hexadecimal-literal ::= 0x hexadecimal-digit {hexadecimal-literal-character}
 hexadecimal-digit ::= Digit 0 through 9, a through f, or A through F
 hexadecimal-literal-character ::= hexadecimal-digit | _
-
-floating-point-literal ::= decimal-literal [decimal-fraction] [decimal-exponent]
-floating-point-literal ::= hexadecimal-literal [hexadecimal-fraction] hexadecimal-exponent
-decimal-fraction ::= . decimal-literal
-decimal-exponent ::= floating-point-e [sign] decimal-literal
-hexadecimal-fraction ::= . hexadecimal-digit [hexadecimal-literal-characters]
+hexadecimal-fraction ::= . hexadecimal-digit {hexadecimal-literal-character}
 hexadecimal-exponent ::= floating-point-p [sign] decimal-literal
+
 floating-point-e ::= e | E
 floating-point-p ::= p | P
 sign ::= + | -
@@ -67,7 +65,7 @@ def _boolean_literal():
 def _numeric_literal():
     integer = maybe(a(u"-")) & _integer_literal()
     floating = maybe(a(u"-")) & _floating_point_literal()
-    return integer # | floating
+    return max(integer, floating)
 
 
 def _integer_literal():
@@ -79,19 +77,46 @@ def _integer_literal():
     octal = match(u"0o") & octal_digit & many(octal_digit | a(u"_"))
     octal >>= set_type(SwiftTypes.LITERAL_INTEGER_OCTAL)
 
+    return binary | octal | _hexadecimal_literal() | _decimal_literal()
+
+
+def _decimal_literal():
     decimal_digit = between(u"0", u"9")
     decimal = decimal_digit & many(decimal_digit | a(u"_"))
     decimal >>= set_type(SwiftTypes.LITERAL_INTEGER_DECIMAL)
+    return decimal
 
-    hexadecimal_digit = between(u"0", u"9") | between(u"a", u"f") | between(u"A", u"F")
-    hexadecimal = match(u"0x") & hexadecimal_digit & many(hexadecimal_digit | a(u"_"))
+
+def _hexadecimal_digit():
+    return between(u"0", u"9") | between(u"a", u"f") | between(u"A", u"F")
+
+
+def _hexadecimal_character():
+    return _hexadecimal_digit() & many(_hexadecimal_digit() | a(u"_"))
+
+
+def _hexadecimal_literal():
+    hexadecimal = match(u"0x") & _hexadecimal_character()
     hexadecimal >>= set_type(SwiftTypes.LITERAL_INTEGER_HEXADECIMAL)
-
-    return binary | octal | decimal | hexadecimal
+    return hexadecimal
 
 
 def _floating_point_literal():
-    return None
+    float_point_e = a(u"e") | a(u"E")
+    float_point_p = a(u"p") | a(u"P")
+    sign = a(u"+") | a(u"-")
+
+    decimal_fraction = a(u".") & _decimal_literal()
+    decimal_exponent = float_point_e & maybe(sign) & _decimal_literal()
+    decimal_floating_literal = _decimal_literal() & maybe(decimal_fraction) & maybe(decimal_exponent)
+    decimal_floating_literal >>= set_type(SwiftTypes.LITERAL_FLOATING_DECIMAL)
+
+    hexadecimal_fraction = a(u".") & _hexadecimal_character()
+    hexadecimal_exponent = float_point_p & maybe(sign) & _decimal_literal()
+    hexadecimal_floating_literal = _hexadecimal_literal() & maybe(hexadecimal_fraction) & hexadecimal_exponent
+    hexadecimal_floating_literal >>= set_type(SwiftTypes.LITERAL_FLOATING_HEXADECIMAL)
+
+    return max(hexadecimal_floating_literal, decimal_floating_literal)
 
 
 def _string_literal():

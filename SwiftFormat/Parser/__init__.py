@@ -116,3 +116,21 @@ def forward_decl():
     def f(state):
         raise Exception('Forward declarations has to be defined on the parser')
     return Parser(f)
+
+
+def max(p1, p2):
+    def _max(state):
+        a = p1.run(state)
+        b = p2.run(state)
+
+        if a is None:
+            return b
+
+        if b is None:
+            return a
+
+        if len(a[0].token) > len(b[0].token):
+            return a
+        return b
+
+    return Parser(_max)

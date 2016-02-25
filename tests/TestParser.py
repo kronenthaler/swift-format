@@ -113,3 +113,7 @@ class ParserCombinatorTest(unittest.TestCase):
         parser = eof()
         assert parser.parse("")
         assert parser.parse("ads") is None
+
+    def testMax(self):
+        parser = max(a("a"), many(a("a")))
+        assert parser.parse("aaaaa")[0].token == "aaaaa"
