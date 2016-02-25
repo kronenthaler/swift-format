@@ -1,3 +1,14 @@
-# from SwiftScanner import *
-# from CommentScanner import *
-# from IdentifierScanner import *
+class SwiftTypes:
+    IDENTIFIER = 1
+    IMPLICIT_PARAMETER = 1 << 1
+    LITERAL_STRING = 1 << 2
+    LITERAL_INTEGER = 1 << 3
+    LITERAL_DECIMAL = 1 << 4
+    LITERAL_BOOLEAN = 1 << 5
+    KEYWORD_DECLARATION = 1 << 6
+    KEYWORD_STATEMENT = 1 << 7
+    KEYWORD_EXPRESSION_TYPES = 1 << 8
+    KEYWORD_PATTERNS = 1 << 9
+    KEYWORD_RESERVED = 1 << 10
+    PUNCTUATION = 1 << 11
+
