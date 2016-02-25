@@ -27,7 +27,7 @@ def anything():
 def eof():
     def _eof(state):
         if state.index == len(state.input):
-            return empty(state), state >> 1
+            return empty(state)
         return None
     return Parser(_eof)
 

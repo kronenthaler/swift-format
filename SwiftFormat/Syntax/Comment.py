@@ -11,7 +11,8 @@ def comment():
 
 
 def _single_line_comment():
-    return match(u"//") & repeat(anything(), a(u"\r") | a(u"\n") | eof())
+    eol = a(u"\r") | a(u"\n") | eof()
+    return match(u"//") & maybe(repeat(anything(), eol)) & eol
 
 def _multi_line_comment():
     multi_line = forward_decl()
