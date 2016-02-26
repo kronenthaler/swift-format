@@ -37,11 +37,12 @@ def unichar(i):
 
 
 def identifier():
-    id = _identifier_head() & many(_identifier_character())
-    escaped_id = a(u"`") & id & a(u"`")
+    id_name = _identifier_head() & many(_identifier_character())
+    escaped_id = a(u"`") & id_name & a(u"`")
     implicit = _implicit_parameter()
 
-    return one_of(id, escaped_id, implicit)
+    return one_of(id_name, escaped_id, implicit)
+
 
 def _identifier_head():
     return one_of(a(u'_'), a(unichar(0x00A8)), a(unichar(0x00AA)), a(unichar(0x00AD)), a(unichar(0x00AF)), a(unichar(0x2054))) | \
@@ -92,13 +93,14 @@ def _identifier_head():
             between(unichar(0xD0000), unichar(0xDFFFD)) | \
             between(unichar(0xE0000), unichar(0xEFFFD))
 
+
 def _identifier_character():
     return between(u'0', u'9') | \
             between(unichar(0x0300), unichar(0x036F)) | \
             between(unichar(0x1DC0), unichar(0x1DFF)) | \
             between(unichar(0x20D0), unichar(0x20FF)) | \
             between(unichar(0xFE20), unichar(0xFE2F)) | \
-           _identifier_head()
+            _identifier_head()
 
 
 def _implicit_parameter():
