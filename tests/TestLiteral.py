@@ -110,3 +110,18 @@ class LiteralTest(unittest.TestCase):
         assert parser.parse(u".0p1") is None
         assert parser.parse(u"0x0.0p1")[0].type != SwiftTypes.LITERAL_FLOATING_DECIMAL
         assert parser.parse(u"0x0p1")[0].type != SwiftTypes.LITERAL_FLOATING_DECIMAL
+
+    def testStaticString(self):
+        parser = literal()
+        # assert parser.parse(u'""')
+        # assert parser.parse(u'"aaa"')
+        # assert parser.parse(u'"\\""')
+        # assert parser.parse(u'"\\u1"')
+        # assert parser.parse(u'"\\u12"')
+        # assert parser.parse(u'"\\u123"')
+        # assert parser.parse(u'"\\u1234"')
+        # assert parser.parse(u'"\\u12345"')
+        # assert parser.parse(u'"\\u123456"')
+        # assert parser.parse(u'"\\u1234567"')
+        # assert parser.parse(u'"\\u12345678"')
+        # assert parser.parse(u'"\\u123456789"')

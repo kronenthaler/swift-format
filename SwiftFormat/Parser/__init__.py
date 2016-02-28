@@ -96,12 +96,28 @@ def at_least_one(parser):
     return parser & many(parser)
 
 
+def up_to(parser, times):
+    def _up_to(state):
+        result = parser.run(state)
+        while result is not None and times > 0:
+            a = parser.run(state)
+            if a is None:
+                return result
+            (lexeme, state) = a
+            result = result[0] + lexeme, result[1] + state
+            times -= 1
+
+        return result
+
+    return Parser(_up_to)
+
+
 def one_of(*options):
     if len(options) == 0:
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] | one_of(*options[1:])
+    return (options[0] | one_of(*options[1:]))
 
 
 def every(*options):
@@ -109,7 +125,7 @@ def every(*options):
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] & every(*options[1:])
+    return (options[0] & every(*options[1:]))
 
 
 def forward_decl():

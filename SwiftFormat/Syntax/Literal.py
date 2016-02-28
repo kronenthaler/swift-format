@@ -49,7 +49,7 @@ from SwiftFormat.Scanner import *
 
 
 def literal():
-    return _numeric_literal() | _boolean_literal() | _nil_literal() # | _string_literal()
+    return _numeric_literal() | _boolean_literal() | _nil_literal() | _string_literal()
 
 
 def _nil_literal():
@@ -118,4 +118,29 @@ def _floating_point_literal():
 
 
 def _string_literal():
-    return None
+    # string-literal ::= static-string-literal | interpolated-string-literal
+    # static-string-literal ::= "[quoted-text]"
+    # quoted-text ::= quoted-text-item [quoted-text]
+    # quoted-text-item ::= escaped-character
+    # quoted-text-item ::= Any Unicode scalar value except ", \, U+000A, or U+000D
+    # interpolated-string-literal ::= "[interpolated-text]"
+    # interpolated-text ::= interpolated-text-item [interpolated-text]
+    # interpolated-text-item ::= \(expression) | quoted-text-item
+    # escaped-character ::= \0 | \\ | \t | \n | \r | \" | \'
+    # escaped-character ::= \u{unicode-scalar-digits}
+    # unicode-scalar-digits ::= Between one and eight hexadecimal digits
+
+    return _static_string_literal() #| _interpolated_string_literal()
+
+
+def _static_string_literal():
+    # TODO: debug this construction to see why the empty string is giving None instead of empty.
+    escaped_character = one_of(a(u"\0"), a(u"\\"), a(u"\t"), a(u"\n"), a(u"\r"), a(u"\""), a(u"\'")) | \
+                        (match(u"\\u") & up_to(_hexadecimal_digit(), 8))
+
+    quoted_text_item = escaped_character # | anything_but(u'"', u"\\", u"\n", u"\r")
+    return a(u"\"") & many(quoted_text_item) & a(u"\"")
+
+
+def _interpolated_string_literal():
+    pass
