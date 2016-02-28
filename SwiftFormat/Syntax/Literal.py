@@ -1,53 +1,51 @@
 from SwiftFormat.Parser import *
 from SwiftFormat.Scanner import *
 
-"""
-literal ::= numeric-literal | string-literal | boolean-literal | nil-literal
-numeric-literal ::= [-]integer-literal | [-]floating-point-literal
-boolean-literal ::= true | false
-nil-literal ::= nil
-
-integer-literal ::= binary-literal
-integer-literal ::= octal-literal
-
-binary-literal ::= 0b binary-digit {binary-literal-character}
-binary-digit ::= Digit 0 or 1
-binary-literal-character ::= binary-digit | _
-
-octal-literal ::= 0o octal-digit {octal-literal-character}
-octal-digit ::= Digit 0 through 7
-octal-literal-character ::= octal-digit | _
-
-floating-point-literal ::= decimal-literal [decimal-fraction] [decimal-exponent]
-decimal-literal ::= decimal-digit {decimal-literal-character}
-decimal-digit ::= Digit 0 through 9
-decimal-literal-character ::= decimal-digit | _
-decimal-fraction ::= . decimal-literal
-decimal-exponent ::= floating-point-e [sign] decimal-literal
-
-floating-point-literal ::= hexadecimal-literal [hexadecimal-fraction] hexadecimal-exponent
-hexadecimal-literal ::= 0x hexadecimal-digit {hexadecimal-literal-character}
-hexadecimal-digit ::= Digit 0 through 9, a through f, or A through F
-hexadecimal-literal-character ::= hexadecimal-digit | _
-hexadecimal-fraction ::= . hexadecimal-digit {hexadecimal-literal-character}
-hexadecimal-exponent ::= floating-point-p [sign] decimal-literal
-
-floating-point-e ::= e | E
-floating-point-p ::= p | P
-sign ::= + | -
-
-string-literal ::= static-string-literal | interpolated-string-literal
-static-string-literal ::= "[quoted-text]"
-quoted-text ::= quoted-text-item [quoted-text]
-quoted-text-item ::= escaped-character
-quoted-text-item ::= Any Unicode scalar value except ", \, U+000A, or U+000D
-interpolated-string-literal ::= "[interpolated-text]"
-interpolated-text ::= interpolated-text-item [interpolated-text]
-interpolated-text-item ::= \(expression) | quoted-text-item
-escaped-character ::= \0 | \\ | \t | \n | \r | \" | \'
-escaped-character ::= \u{unicode-scalar-digits}
-unicode-scalar-digits ::= Between one and eight hexadecimal digits
-"""
+# literal ::= numeric-literal | string-literal | boolean-literal | nil-literal
+# numeric-literal ::= [-]integer-literal | [-]floating-point-literal
+# boolean-literal ::= true | false
+# nil-literal ::= nil
+#
+# integer-literal ::= binary-literal
+# integer-literal ::= octal-literal
+#
+# binary-literal ::= 0b binary-digit {binary-literal-character}
+# binary-digit ::= Digit 0 or 1
+# binary-literal-character ::= binary-digit | _
+#
+# octal-literal ::= 0o octal-digit {octal-literal-character}
+# octal-digit ::= Digit 0 through 7
+# octal-literal-character ::= octal-digit | _
+#
+# floating-point-literal ::= decimal-literal [decimal-fraction] [decimal-exponent]
+# decimal-literal ::= decimal-digit {decimal-literal-character}
+# decimal-digit ::= Digit 0 through 9
+# decimal-literal-character ::= decimal-digit | _
+# decimal-fraction ::= . decimal-literal
+# decimal-exponent ::= floating-point-e [sign] decimal-literal
+#
+# floating-point-literal ::= hexadecimal-literal [hexadecimal-fraction] hexadecimal-exponent
+# hexadecimal-literal ::= 0x hexadecimal-digit {hexadecimal-literal-character}
+# hexadecimal-digit ::= Digit 0 through 9, a through f, or A through F
+# hexadecimal-literal-character ::= hexadecimal-digit | _
+# hexadecimal-fraction ::= . hexadecimal-digit {hexadecimal-literal-character}
+# hexadecimal-exponent ::= floating-point-p [sign] decimal-literal
+#
+# floating-point-e ::= e | E
+# floating-point-p ::= p | P
+# sign ::= + | -
+#
+# string-literal ::= static-string-literal | interpolated-string-literal
+# static-string-literal ::= "[quoted-text]"
+# quoted-text ::= quoted-text-item [quoted-text]
+# quoted-text-item ::= escaped-character
+# quoted-text-item ::= Any Unicode scalar value except ", \, U+000A, or U+000D
+# interpolated-string-literal ::= "[interpolated-text]"
+# interpolated-text ::= interpolated-text-item [interpolated-text]
+# interpolated-text-item ::= \(expression) | quoted-text-item
+# escaped-character ::= \0 | \\ | \t | \n | \r | \" | \'
+# escaped-character ::= \u{unicode-scalar-digits}
+# unicode-scalar-digits ::= Between one and eight hexadecimal digits
 
 
 def literal():
