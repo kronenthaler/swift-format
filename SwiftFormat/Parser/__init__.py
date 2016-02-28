@@ -16,9 +16,9 @@ def match(sequence):
     return every(*options)
 
 
-def anything():
+def anything(*exceptions):
     def _anything(state):
-        if state.index < len(state.input):
+        if state.index < len(state.input) and state.input[state.index] not in exceptions:
             return Lexeme(state.input[state.index], state.index, state.index + 1), state >> 1
         return None
     return Parser(_anything)
@@ -96,12 +96,19 @@ def at_least_one(parser):
     return parser & many(parser)
 
 
+def up_to(parser, times):
+    if times == 1:
+        return parser
+
+    return parser & maybe(up_to(parser, times - 1))
+
+
 def one_of(*options):
     if len(options) == 0:
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] | one_of(*options[1:])
+    return (options[0] | one_of(*options[1:]))
 
 
 def every(*options):
@@ -109,7 +116,7 @@ def every(*options):
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] & every(*options[1:])
+    return (options[0] & every(*options[1:]))
 
 
 def forward_decl():

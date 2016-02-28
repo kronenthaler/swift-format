@@ -110,3 +110,28 @@ class LiteralTest(unittest.TestCase):
         assert parser.parse(u".0p1") is None
         assert parser.parse(u"0x0.0p1")[0].type != SwiftTypes.LITERAL_FLOATING_DECIMAL
         assert parser.parse(u"0x0p1")[0].type != SwiftTypes.LITERAL_FLOATING_DECIMAL
+
+    def testStaticString(self):
+        parser = literal()
+        assert parser.parse(u'""')
+        assert parser.parse(u'"aaa"')
+        assert parser.parse(u'"!@#$%^&*()_+=-<>,./?:"|;`~aa"')
+        assert parser.parse(u'"\n"') is None
+        assert parser.parse(u'"\r"') is None
+        assert parser.parse(u'"\\"') is None
+        assert parser.parse(u'"\\""')
+        assert parser.parse(u'"\\u{1}"')
+        assert parser.parse(u'"\\u1"') is None
+        assert parser.parse(u'"\\u{12}"')
+        assert parser.parse(u'"\\u{123}"')
+        assert parser.parse(u'"\\u{1234}"')
+        assert parser.parse(u'"\\u{12345}"')
+        assert parser.parse(u'"\\u{123456}"')
+        assert parser.parse(u'"\\u{1234567}"')
+        assert parser.parse(u'"\\u{12345678}"')
+        assert parser.parse(u'"\\u{123456789}"') is None
+
+    # def testInterpolatedString(self):
+    #     parser = literal()
+    #     assert parser.parse(u'"\\(something)"')
+    #     assert parser.parse(u'"\\(something"') is None

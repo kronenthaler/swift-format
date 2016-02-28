@@ -109,6 +109,18 @@ class ParserCombinatorTest(unittest.TestCase):
         assert parser.parse(" ")
         assert parser.parse("") is None
 
+    def testAnythingBut(self):
+        parser = anything("1", "2", "3")
+        assert parser.parse("a")
+        assert parser.parse("0")
+        assert parser.parse("\n")
+        assert parser.parse(" ")
+
+        assert parser.parse("1") is None
+        assert parser.parse("2") is None
+        assert parser.parse("3") is None
+        assert parser.parse("") is None
+
     def testEOF(self):
         parser = eof()
         assert parser.parse("")
@@ -117,3 +129,14 @@ class ParserCombinatorTest(unittest.TestCase):
     def testMax(self):
         parser = longest(a("a"), many(a("a")))
         assert parser.parse("aaaaa")[0].token == "aaaaa"
+
+    def testUpTo(self):
+        parser = up_to(a("a"), 1)
+        assert parser.parse("a")
+        assert parser.parse("aa")[0].__len__() == 1
+
+        parser = up_to(a("a"), 3)
+        assert parser.parse("a")
+        assert parser.parse("aa")
+        assert parser.parse("aaa")
+        assert parser.parse("aaaa")[0].__len__() == 3
