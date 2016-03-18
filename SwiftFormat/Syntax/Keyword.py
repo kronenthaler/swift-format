@@ -22,7 +22,8 @@ def keyword():
            _statement_keyword() | \
            _expression_keyword() | \
            _pattern_keyword() | \
-           _context_keywords()
+           _context_keywords() | \
+           _punctuation()
 
 
 def _declaration_keyword():
@@ -68,3 +69,9 @@ def _context_keywords():
                   match(u"Protocol"), match(u"required"), match(u"right"),
                   match(u"set"), match(u"Type"), match(u"unowned"),
                   match(u"weak"), match(u"willSet")) >> set_type(SwiftTypes.KEYWORD_RESERVED | SwiftTypes.IDENTIFIER)
+
+
+def _punctuation():
+    return one_of(a(u"("), a(u")"), a(u"{"), a(u"}"), a(u"["), a(u"]"), a(u"."), a(u","), a(u":"),
+                  a(u";"), a(u"="), a(u"@"), a(u"#"), a(u"&"), match(u"->"), a(u"`"), a(u"?"), a(u"!")
+                  ) >> set_type(SwiftTypes.PUNCTUATION)
