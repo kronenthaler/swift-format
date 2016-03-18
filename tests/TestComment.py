@@ -5,7 +5,6 @@ from SwiftFormat.Syntax import *
 
 
 class CommentTest(unittest.TestCase):
-
     def testSingleLine(self):
         parser = comment()
         assert parser.parse(u"//something\n")

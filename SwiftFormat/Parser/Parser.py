@@ -1,5 +1,6 @@
 from State import *
 
+
 class Parser:
     """
     Wrapper object of a function of type:
@@ -27,6 +28,7 @@ class Parser:
                 return b
 
             return None
+
         return Parser(_or)
 
     def __and__(self, other):
@@ -43,6 +45,7 @@ class Parser:
             (lexemeB, b) = b
 
             return lexemeA + lexemeB, a + b
+
         return Parser(_and)
 
     def __rshift__(self, f):

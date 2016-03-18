@@ -3,7 +3,6 @@ from SwiftFormat.Syntax import *
 
 
 class IdentifierTest(unittest.TestCase):
-
     def testImplicitParameter(self):
         parser = identifier()
         assert parser.parse(u"$0")

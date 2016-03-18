@@ -4,7 +4,6 @@ from SwiftFormat.Syntax import *
 
 
 class LiteralTest(unittest.TestCase):
-
     def testNilLiteral(self):
         parser = literal()
         assert parser.parse(u"nil")

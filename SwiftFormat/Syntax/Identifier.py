@@ -2,6 +2,7 @@ import struct
 from SwiftFormat.Parser import *
 from SwiftFormat.Scanner import *
 
+
 # identifier ::= identifier-head [identifier-characters]
 # identifier ::= `identifier-head [identifier-characters]`
 # identifier ::= implicit-parameter-name
@@ -49,62 +50,63 @@ def identifier():
 
 
 def _identifier_head():
-    return one_of(a(u'_'), a(unichar(0x00A8)), a(unichar(0x00AA)), a(unichar(0x00AD)), a(unichar(0x00AF)), a(unichar(0x2054))) | \
-            between(u'a', u'z') | \
-            between(u'A', u'Z') | \
-            between(unichar(0x00B2), unichar(0x00B5)) | \
-            between(unichar(0x00B7), unichar(0x00BA)) | \
-            between(unichar(0x00BC), unichar(0x00BE)) | \
-            between(unichar(0x00C0), unichar(0x00D6)) | \
-            between(unichar(0x00D8), unichar(0x00F6)) | \
-            between(unichar(0x00F8), unichar(0x00FF)) | \
-            between(unichar(0x0100), unichar(0x02FF)) | \
-            between(unichar(0x0370), unichar(0x167F)) | \
-            between(unichar(0x1681), unichar(0x180D)) | \
-            between(unichar(0x180F), unichar(0x1DBF)) | \
-            between(unichar(0x1E00), unichar(0x1FFF)) | \
-            between(unichar(0x200B), unichar(0x200D)) | \
-            between(unichar(0x202A), unichar(0x202E)) | \
-            between(unichar(0x203F), unichar(0x2040)) | \
-            between(unichar(0x2060), unichar(0x206F)) | \
-            between(unichar(0x2070), unichar(0x20CF)) | \
-            between(unichar(0x2100), unichar(0x218F)) | \
-            between(unichar(0x2460), unichar(0x24FF)) | \
-            between(unichar(0x2776), unichar(0x2793)) | \
-            between(unichar(0x2C00), unichar(0x2DFF)) | \
-            between(unichar(0x2E80), unichar(0x2FFF)) | \
-            between(unichar(0x3004), unichar(0x3007)) | \
-            between(unichar(0x3021), unichar(0x302F)) | \
-            between(unichar(0x3031), unichar(0x303F)) | \
-            between(unichar(0x3040), unichar(0xD7FF)) | \
-            between(unichar(0xF900), unichar(0xFD3D)) | \
-            between(unichar(0xFD40), unichar(0xFDCF)) | \
-            between(unichar(0xFDF0), unichar(0xFE1F)) | \
-            between(unichar(0xFE30), unichar(0xFE44)) | \
-            between(unichar(0xFE47), unichar(0xFFFD)) | \
-            between(unichar(0x10000), unichar(0x1FFFD)) | \
-            between(unichar(0x20000), unichar(0x2FFFD)) | \
-            between(unichar(0x30000), unichar(0x3FFFD)) | \
-            between(unichar(0x40000), unichar(0x4FFFD)) | \
-            between(unichar(0x50000), unichar(0x5FFFD)) | \
-            between(unichar(0x60000), unichar(0x6FFFD)) | \
-            between(unichar(0x70000), unichar(0x7FFFD)) | \
-            between(unichar(0x80000), unichar(0x8FFFD)) | \
-            between(unichar(0x90000), unichar(0x9FFFD)) | \
-            between(unichar(0xA0000), unichar(0xAFFFD)) | \
-            between(unichar(0xB0000), unichar(0xBFFFD)) | \
-            between(unichar(0xC0000), unichar(0xCFFFD)) | \
-            between(unichar(0xD0000), unichar(0xDFFFD)) | \
-            between(unichar(0xE0000), unichar(0xEFFFD))
+    return one_of(a(u'_'), a(unichar(0x00A8)), a(unichar(0x00AA)), a(unichar(0x00AD)), a(unichar(0x00AF)),
+                  a(unichar(0x2054))) | \
+           between(u'a', u'z') | \
+           between(u'A', u'Z') | \
+           between(unichar(0x00B2), unichar(0x00B5)) | \
+           between(unichar(0x00B7), unichar(0x00BA)) | \
+           between(unichar(0x00BC), unichar(0x00BE)) | \
+           between(unichar(0x00C0), unichar(0x00D6)) | \
+           between(unichar(0x00D8), unichar(0x00F6)) | \
+           between(unichar(0x00F8), unichar(0x00FF)) | \
+           between(unichar(0x0100), unichar(0x02FF)) | \
+           between(unichar(0x0370), unichar(0x167F)) | \
+           between(unichar(0x1681), unichar(0x180D)) | \
+           between(unichar(0x180F), unichar(0x1DBF)) | \
+           between(unichar(0x1E00), unichar(0x1FFF)) | \
+           between(unichar(0x200B), unichar(0x200D)) | \
+           between(unichar(0x202A), unichar(0x202E)) | \
+           between(unichar(0x203F), unichar(0x2040)) | \
+           between(unichar(0x2060), unichar(0x206F)) | \
+           between(unichar(0x2070), unichar(0x20CF)) | \
+           between(unichar(0x2100), unichar(0x218F)) | \
+           between(unichar(0x2460), unichar(0x24FF)) | \
+           between(unichar(0x2776), unichar(0x2793)) | \
+           between(unichar(0x2C00), unichar(0x2DFF)) | \
+           between(unichar(0x2E80), unichar(0x2FFF)) | \
+           between(unichar(0x3004), unichar(0x3007)) | \
+           between(unichar(0x3021), unichar(0x302F)) | \
+           between(unichar(0x3031), unichar(0x303F)) | \
+           between(unichar(0x3040), unichar(0xD7FF)) | \
+           between(unichar(0xF900), unichar(0xFD3D)) | \
+           between(unichar(0xFD40), unichar(0xFDCF)) | \
+           between(unichar(0xFDF0), unichar(0xFE1F)) | \
+           between(unichar(0xFE30), unichar(0xFE44)) | \
+           between(unichar(0xFE47), unichar(0xFFFD)) | \
+           between(unichar(0x10000), unichar(0x1FFFD)) | \
+           between(unichar(0x20000), unichar(0x2FFFD)) | \
+           between(unichar(0x30000), unichar(0x3FFFD)) | \
+           between(unichar(0x40000), unichar(0x4FFFD)) | \
+           between(unichar(0x50000), unichar(0x5FFFD)) | \
+           between(unichar(0x60000), unichar(0x6FFFD)) | \
+           between(unichar(0x70000), unichar(0x7FFFD)) | \
+           between(unichar(0x80000), unichar(0x8FFFD)) | \
+           between(unichar(0x90000), unichar(0x9FFFD)) | \
+           between(unichar(0xA0000), unichar(0xAFFFD)) | \
+           between(unichar(0xB0000), unichar(0xBFFFD)) | \
+           between(unichar(0xC0000), unichar(0xCFFFD)) | \
+           between(unichar(0xD0000), unichar(0xDFFFD)) | \
+           between(unichar(0xE0000), unichar(0xEFFFD))
 
 
 def _identifier_character():
     return between(u'0', u'9') | \
-            between(unichar(0x0300), unichar(0x036F)) | \
-            between(unichar(0x1DC0), unichar(0x1DFF)) | \
-            between(unichar(0x20D0), unichar(0x20FF)) | \
-            between(unichar(0xFE20), unichar(0xFE2F)) | \
-            _identifier_head()
+           between(unichar(0x0300), unichar(0x036F)) | \
+           between(unichar(0x1DC0), unichar(0x1DFF)) | \
+           between(unichar(0x20D0), unichar(0x20FF)) | \
+           between(unichar(0xFE20), unichar(0xFE2F)) | \
+           _identifier_head()
 
 
 def _implicit_parameter():

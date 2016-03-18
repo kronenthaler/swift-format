@@ -34,4 +34,5 @@ def set_type(lexeme_type):
     def _mark(lexeme):
         lexeme.type = lexeme_type
         return lexeme
+
     return _mark

@@ -1,6 +1,3 @@
-from SwiftFormat.Syntax import *
-
-
 class SwiftScanner:
     def __init__(self, src):
         # initialize the grammar components ?
