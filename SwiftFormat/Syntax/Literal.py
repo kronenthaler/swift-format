@@ -146,10 +146,10 @@ def _quoted_text_item():
 
 
 def _interpolated_string_literal():
-    interpolated_text = match(u"\\(") & expression() & a(u")") | _quoted_text_item()
+    interpolated_text = (match(u"\\(") & expression() & a(u")")) | _quoted_text_item()
     return a(u"\"") & many(interpolated_text) & a(u"\"")
 
 
 def expression():
     # TODO: remove this placeholder when the syntax handler is created
-    return anything(u")")
+    return many(anything(u")"))
