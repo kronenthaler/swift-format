@@ -12,7 +12,7 @@ class NoseTestCommand(TestCommand):
     def run_tests(self):
         # Run nose ensuring that argv simulates running nosetests directly
         import nose
-        nose.run_exit(argv=['nosetests','-w','tests'])
+        nose.run_exit(argv=['nosetests', '-w', 'tests'])
 
 
 setup(name='SwiftFormat',
@@ -21,7 +21,7 @@ setup(name='SwiftFormat',
       url="http://github.com/kronenthaler/swift-format",
       version='1.3',
       license='BSD License',
-#      packages=find_packages(exclude=['tests']),
+      packages=find_packages(exclude=['tests']),
       setup_requires=['nose', 'coverage'],
       cmdclass={'test': NoseTestCommand},
-)
+      )

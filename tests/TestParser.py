@@ -5,7 +5,6 @@ from SwiftFormat.Scanner import *
 
 
 class ParserCombinatorTest(unittest.TestCase):
-
     def testA(self):
         parser = a("a")
         assert parser.parse('a')

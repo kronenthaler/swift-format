@@ -8,6 +8,7 @@ def a(literal):
         if state.index < len(state.input) and state.input[state.index] == literal:
             return Lexeme(literal, state.index, state.index + 1), state >> 1
         return None
+
     return Parser(_match)
 
 
@@ -21,6 +22,7 @@ def anything(*exceptions):
         if state.index < len(state.input) and state.input[state.index] not in exceptions:
             return Lexeme(state.input[state.index], state.index, state.index + 1), state >> 1
         return None
+
     return Parser(_anything)
 
 
@@ -29,6 +31,7 @@ def eof():
         if state.index == len(state.input):
             return empty(state)
         return None
+
     return Parser(_eof)
 
 
@@ -40,6 +43,7 @@ def between(lower, upper):
         if state.index < len(state.input) and lower <= state.input[state.index] <= upper:
             return Lexeme(state.input[state.index], state.index, state.index + 1), state >> 1
         return None
+
     return Parser(_between)
 
 
@@ -57,6 +61,7 @@ def repeat(parser, until):
                 result = empty(state)
             result = result[0] + lexeme, result[1] + state
         return result
+
     return Parser(_repeat)
 
 
@@ -68,6 +73,7 @@ def skip(parser):
     def _skip(state):
         (l, s) = many(parser).run(state)
         return empty(s)
+
     return Parser(_skip)
 
 
@@ -77,6 +83,7 @@ def maybe(parser):
         if a is not None:
             return a
         return empty(state)
+
     return Parser(_maybe)
 
 
@@ -89,6 +96,7 @@ def many(parser):
                 return result
             (lexeme, state) = a
             result = result[0] + lexeme, result[1] + state
+
     return Parser(_many)
 
 
@@ -122,6 +130,7 @@ def every(*options):
 def forward_decl():
     def f(state):
         raise Exception('Forward declarations has to be defined on the parser')
+
     return Parser(f)
 
 

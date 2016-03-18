@@ -1,6 +1,7 @@
 from SwiftFormat.Parser import *
 from SwiftFormat.Scanner import *
 
+
 # literal ::= numeric-literal | string-literal | boolean-literal | nil-literal
 # numeric-literal ::= [-]integer-literal | [-]floating-point-literal
 # boolean-literal ::= true | false
@@ -118,18 +119,6 @@ def _floating_point_literal():
 
 
 def _string_literal():
-    # string-literal ::= static-string-literal | interpolated-string-literal
-    # static-string-literal ::= "[quoted-text]"
-    # quoted-text ::= quoted-text-item [quoted-text]
-    # quoted-text-item ::= escaped-character
-    # quoted-text-item ::= Any Unicode scalar value except ", \, U+000A, or U+000D
-    # interpolated-string-literal ::= "[interpolated-text]"
-    # interpolated-text ::= interpolated-text-item [interpolated-text]
-    # interpolated-text-item ::= \(expression) | quoted-text-item
-    # escaped-character ::= \0 | \\ | \t | \n | \r | \" | \'
-    # escaped-character ::= \u{unicode-scalar-digits}
-    # unicode-scalar-digits ::= Between one and eight hexadecimal digits
-
     return (_static_string_literal() | _interpolated_string_literal()) >> set_type(SwiftTypes.LITERAL_STRING)
 
 

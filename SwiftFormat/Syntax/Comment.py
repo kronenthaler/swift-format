@@ -1,5 +1,6 @@
 from SwiftFormat.Parser import *
 
+
 # comment ::= single_line | multi_line
 # single_line ::= //[ascii]* \n
 # single_line ::= //[ascii]* \r
@@ -14,6 +15,7 @@ def comment():
 def _single_line_comment():
     eol = a(u"\r") | a(u"\n") | eof()
     return match(u"//") & maybe(repeat(anything(), eol)) & eol
+
 
 def _multi_line_comment():
     multi_line = forward_decl()
