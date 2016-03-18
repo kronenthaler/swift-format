@@ -16,9 +16,9 @@ def match(sequence):
     return every(*options)
 
 
-def anything():
+def anything(*exceptions):
     def _anything(state):
-        if state.index < len(state.input):
+        if state.index < len(state.input) and state.input[state.index] not in exceptions:
             return Lexeme(state.input[state.index], state.index, state.index + 1), state >> 1
         return None
     return Parser(_anything)
@@ -30,6 +30,7 @@ def eof():
             return empty(state)
         return None
     return Parser(_eof)
+
 
 def between(lower, upper):
     # given a lower and upper limit, return a (Lexeme, State) if the current character of the input it's between
@@ -95,12 +96,19 @@ def at_least_one(parser):
     return parser & many(parser)
 
 
+def up_to(parser, times):
+    if times == 1:
+        return parser
+
+    return parser & maybe(up_to(parser, times - 1))
+
+
 def one_of(*options):
     if len(options) == 0:
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] | one_of(*options[1:])
+    return (options[0] | one_of(*options[1:]))
 
 
 def every(*options):
@@ -108,10 +116,22 @@ def every(*options):
         return None
     if len(options) == 1:
         return options[0]
-    return options[0] & every(*options[1:])
+    return (options[0] & every(*options[1:]))
 
 
 def forward_decl():
     def f(state):
         raise Exception('Forward declarations has to be defined on the parser')
     return Parser(f)
+
+
+def longest(*options):
+    def _longest(state):
+        results = [p.run(state) for p in options]
+        valid = [t for t in results if t is not None]
+        if len(valid) == 0:
+            return None
+
+        return max(valid, key=(lambda (l, s): l.__len__()))
+
+    return Parser(_longest)

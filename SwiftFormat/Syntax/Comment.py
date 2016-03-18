@@ -6,6 +6,7 @@ from SwiftFormat.Parser import *
 # single_line ::= //[ascii]* EOF
 # multi_line ::= /* {[ascii]* | multi_line}* */
 
+
 def comment():
     return _single_line_comment() | _multi_line_comment()
 
