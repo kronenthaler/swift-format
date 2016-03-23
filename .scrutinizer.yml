@@ -12,6 +12,17 @@ checks:
         classes_bad_mcs_method_argument: true
         classes_super_init_not_called: true
         design_abstract_class_little_used: true
+        variables_redefined_builtin: true
+        newstyle_bad_super_call: true
+        logging_not_lazy: true
+        exceptions_broad_except: true
+        exceptions_bare_except: true
+        classes_protected_access: true
+        classes_no_self_argument: true
+        classes_bad_classmethod_argument: true
+        basic_lost_exception: true
+        basic_function_redefined: true
+
 
 
 filter:
