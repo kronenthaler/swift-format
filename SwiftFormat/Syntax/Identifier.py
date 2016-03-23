@@ -1,4 +1,3 @@
-import struct
 from SwiftFormat.Parser import *
 from SwiftFormat.Scanner import *
 
@@ -27,13 +26,6 @@ from SwiftFormat.Scanner import *
 # identifier-character ::= identifier-head
 # identifier-characters ::= identifier-character [identifier-characters]
 # implicit-parameter-name ::= $ [0-9]+
-
-
-def unichar(i):
-    try:
-        return unichr(i)
-    except ValueError:
-        return struct.pack('i', i).decode('utf-32')
 
 
 def identifier():
