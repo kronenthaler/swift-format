@@ -48,7 +48,8 @@ def postfix_operator():
 
 
 def operator():
-    return (_operator_head() & many(_operator_character())) | (_dot_operator_head() & _dot_operator_characters())
+    op = (_operator_head() & many(_operator_character())) | (_dot_operator_head() & _dot_operator_characters())
+    return op >> set_type(SwiftTypes.OPERATOR)
 
 
 def _operator_head():
