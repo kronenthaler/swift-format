@@ -1,3 +1,6 @@
+import struct
+
+
 class SwiftTypes:
     IDENTIFIER = 1
     IMPLICIT_PARAMETER = 1 << 1
@@ -16,3 +19,11 @@ class SwiftTypes:
     KEYWORD_PATTERNS = 1 << 13
     KEYWORD_RESERVED = 1 << 14
     PUNCTUATION = 1 << 15
+    OPERATOR = 1 << 16
+
+
+def unichar(i):
+    try:
+        return unichr(i)
+    except ValueError:
+        return struct.pack('i', i).decode('utf-32')
