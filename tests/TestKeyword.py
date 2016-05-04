@@ -96,13 +96,13 @@ class KeywordTest(unittest.TestCase):
         assert parser.parse(u"unowned")
         assert parser.parse(u"weak")
         assert parser.parse(u"willSet")
-        assert (parser.parse(u"willSet")[0].type & SwiftTypes.KEYWORD_RESERVED) != 0
-        assert (parser.parse(u"willSet")[0].type & SwiftTypes.IDENTIFIER) != 0
+        assert (parser.parse(u"willSet")[0].meta.type & SwiftTypes.KEYWORD_RESERVED) != 0
+        assert (parser.parse(u"willSet")[0].meta.type & SwiftTypes.IDENTIFIER) != 0
 
     def testPatternKeyword(self):
         parser = keyword()
         assert parser.parse(u"_")
-        assert parser.parse(u"_")[0].type == SwiftTypes.KEYWORD_PATTERNS
+        assert parser.parse(u"_")[0].meta.type == SwiftTypes.KEYWORD_PATTERNS
 
     def testPunctuationKeywords(self):
         parser = keyword()

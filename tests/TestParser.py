@@ -22,13 +22,13 @@ class ParserCombinatorTest(unittest.TestCase):
         assert parser.parse('c') is None
 
     def testRShift(self):
-        parser = a('a') >> (lambda x: string.upper(x.token) if x is not None else x)
-        assert parser.parse("a")[0] == "A"
+        parser = a('a') >> (lambda x: string.upper(x) if x is not None else x)
+        assert parser.parse("a")[0] == u"A"
         assert parser.parse('b') is None
 
     def testSetType(self):
         parser = (a('a') | a('b')) >> (set_type(SwiftTypes.LITERAL_INTEGER_BINARY))
-        assert parser.parse('a')[0].type == SwiftTypes.LITERAL_INTEGER_BINARY
+        assert parser.parse('a')[0].meta.type == SwiftTypes.LITERAL_INTEGER_BINARY
 
     def testBetween(self):
         parser = between('a', 'c')
@@ -40,19 +40,20 @@ class ParserCombinatorTest(unittest.TestCase):
     def testMaybe(self):
         parser = maybe(a('a'))
         assert parser.parse('a')
-        assert parser.parse('b')[0].token is None
+        assert parser.parse('b')[0] == u""
 
     def testAtLeastOne(self):
         parser = at_least_one(a("a"))
         assert parser.parse('a')
-        assert parser.parse('aaaa')[0].token == "aaaa"
+        assert parser.parse('aaaa')[0] == u"aaaa"
         assert parser.parse('b') is None
 
     def testMany(self):
         parser = many(a("a"))
+        assert parser.parse('b')[0] == u""
         assert parser.parse('a')
-        assert parser.parse('aaaa')[0].token == "aaaa"
-        assert parser.parse('b')[0].token is None
+        assert parser.parse('aaaa')[0] == u"aaaa"
+
 
     def testOneOf(self):
         parser = one_of(a(" "), a("\t"), a("\n"))
@@ -71,7 +72,7 @@ class ParserCombinatorTest(unittest.TestCase):
 
     def testSkip(self):
         parser = skip(one_of(a(" "), a("\t"), a("\n"))) & a("a")
-        assert parser.parse("   a")[0].token == 'a'
+        assert parser.parse("   a")[0] == u'a'
 
     def testRepeat(self):
         parser = repeat(a("a"), a("a") & a("b"))
@@ -127,7 +128,7 @@ class ParserCombinatorTest(unittest.TestCase):
 
     def testMax(self):
         parser = longest(a("a"), many(a("a")))
-        assert parser.parse("aaaaa")[0].token == "aaaaa"
+        assert parser.parse("aaaaa")[0] == u"aaaaa"
 
     def testUpTo(self):
         parser = up_to(a("a"), 1)

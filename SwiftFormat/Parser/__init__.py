@@ -66,7 +66,7 @@ def repeat(parser, until):
 
 
 def empty(state):
-    return Lexeme(None, 0, 0), state
+    return Lexeme(u"", 0, 0), state
 
 
 def skip(parser):
